@@ -1,13 +1,13 @@
-import asyncio
-import os
-import time
-
+import anthropic
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 load_dotenv()  # reads .env and puts its values into os.environ
+
+# Reads ANTHROPIC_API_KEY from the environment automatically
+claude = anthropic.Anthropic()
 
 app = FastAPI(title="Cortex Backend - Learning Demo")
 
@@ -23,6 +23,10 @@ class TicketCreate(BaseModel):
     title: str
     priority: str = "medium"
 
+
+class AskRequest(BaseModel):
+    question: str
+
 # In-memory "database" just for this demo (resets every time you restart the server)
 tickets = [
     {"id": 1, "title": "Login page broken", "priority": "high", "status": "open"},
@@ -33,28 +37,6 @@ tickets = [
 @app.get("/")
 def read_root():
     return {"message": "Cortex backend is running"}
-
-
-@app.get("/config-check")
-def config_check():
-    return {"app_name": os.getenv("APP_NAME")}
-
-
-@app.get("/bad-async-wait")
-async def bad_async_wait():
-    # WRONG: time.sleep() is a BLOCKING call with no await.
-    # Inside an async def, this freezes the entire event loop —
-    # every other request (even to unrelated routes) has to wait too.
-    time.sleep(3)
-    return {"message": "done (blocked the whole server for 3s)"}
-
-
-@app.get("/good-async-wait")
-async def good_async_wait():
-    # RIGHT: asyncio.sleep() is awaitable — it yields control back
-    # to the event loop, so other requests get handled concurrently.
-    await asyncio.sleep(3)
-    return {"message": "done (server stayed free for other requests)"}
 
 
 @app.get("/tickets")
@@ -80,6 +62,26 @@ def create_ticket(ticket: TicketCreate):
     }
     tickets.append(new_ticket)
     return new_ticket
+
+
+@app.post("/ask")
+def ask_claude(request: AskRequest):
+    try:
+        response = claude.messages.create(
+            model="claude-opus-5",
+            max_tokens=1024,
+            system="You are a helpful support assistant for Cortex, a ticketing platform.",
+            messages=[{"role": "user", "content": request.question}],
+        )
+    except anthropic.AuthenticationError:
+        raise HTTPException(status_code=500, detail="Invalid or missing ANTHROPIC_API_KEY")
+    except anthropic.RateLimitError:
+        raise HTTPException(status_code=429, detail="Rate limited by Anthropic API")
+    except anthropic.APIStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Anthropic API error: {e.message}")
+
+    answer = next((b.text for b in response.content if b.type == "text"), "")
+    return {"answer": answer}
 
 
 @app.delete("/tickets/{ticket_id}")
