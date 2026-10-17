@@ -11,8 +11,8 @@ init_db()
 with SessionLocal() as db:
     if db.query(TicketDB).count() == 0:
         db.add_all([
-            TicketDB(title="Login page broken", priority="high", status="open"),
-            TicketDB(title="Typo on homepage", priority="low", status="open"),
+            TicketDB(title="Login page broken", priority="high", topic="bug", status="open"),
+            TicketDB(title="Typo on homepage", priority="low", topic="bug", status="open"),
         ])
         db.commit()
 

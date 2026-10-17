@@ -10,6 +10,7 @@ type Ticket = {
   id: number;
   title: string;
   priority: string;
+  topic: string;
   status: string;
 };
 
@@ -62,6 +63,14 @@ function IconTicket() {
         strokeLinejoin="round"
         d="M3 10a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5a1.5 1.5 0 0 0 0 3V16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.5a1.5 1.5 0 0 0 0-3V10Z"
       />
+    </svg>
+  );
+}
+
+function IconPlus() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+      <path d="M10 3a1 1 0 0 1 1 1v5h5a1 1 0 1 1 0 2h-5v5a1 1 0 1 1-2 0v-5H4a1 1 0 1 1 0-2h5V4a1 1 0 0 1 1-1Z" />
     </svg>
   );
 }
@@ -153,6 +162,10 @@ export default function Home() {
   const [ticketsError, setTicketsError] = useState<string | null>(null);
   const [loadingTickets, setLoadingTickets] = useState(true);
 
+  const [newTicketTitle, setNewTicketTitle] = useState("");
+  const [creatingTicket, setCreatingTicket] = useState(false);
+  const [createTicketError, setCreateTicketError] = useState<string | null>(null);
+
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [asking, setAsking] = useState(false);
@@ -221,6 +234,38 @@ export default function Home() {
       setAskError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setAsking(false);
+    }
+  }
+
+  async function handleCreateTicket(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = newTicketTitle.trim();
+    if (!trimmed) return;
+
+    setCreatingTicket(true);
+    setCreateTicketError(null);
+
+    try {
+      // Only the title is sent - the backend calls Claude to decide
+      // priority and topic automatically (see app/classify.py).
+      const res = await fetch(`${API_URL}/tickets`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: trimmed }),
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.detail ?? `Request failed with ${res.status}`);
+      }
+
+      const newTicket: Ticket = await res.json();
+      setTickets((prev) => [newTicket, ...prev]);
+      setNewTicketTitle("");
+    } catch (err) {
+      setCreateTicketError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setCreatingTicket(false);
     }
   }
 
@@ -321,6 +366,33 @@ export default function Home() {
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <form
+              onSubmit={handleCreateTicket}
+              className="flex items-center gap-2 border-b border-zinc-100 p-3 dark:border-zinc-800"
+            >
+              <input
+                type="text"
+                value={newTicketTitle}
+                onChange={(e) => setNewTicketTitle(e.target.value)}
+                placeholder="Describe a new ticket… (priority is set by AI)"
+                className="flex-1 rounded-xl border border-transparent bg-zinc-50 px-4 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-zinc-600"
+              />
+              <button
+                type="submit"
+                disabled={creatingTicket || !newTicketTitle.trim()}
+                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-300"
+              >
+                <IconPlus />
+                {creatingTicket ? "Classifying…" : "Add"}
+              </button>
+            </form>
+
+            {createTicketError && (
+              <p className="px-5 py-3 text-sm text-rose-600 dark:text-rose-400">
+                {createTicketError}
+              </p>
+            )}
+
             {loadingTickets && (
               <p className="px-5 py-6 text-sm text-zinc-500">Loading tickets…</p>
             )}
@@ -349,6 +421,9 @@ export default function Home() {
                   />
                   <span className="flex-1 text-sm text-zinc-800 dark:text-zinc-200">
                     {ticket.title}
+                  </span>
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500">
+                    {ticket.topic}
                   </span>
                   <span className="text-xs text-zinc-400 dark:text-zinc-500">
                     {ticket.status}
