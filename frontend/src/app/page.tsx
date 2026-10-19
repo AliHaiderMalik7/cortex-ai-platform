@@ -33,10 +33,10 @@ const priorityDot: Record<string, string> = {
 };
 
 const priorityBadge: Record<string, string> = {
-  high: "bg-rose-50 text-rose-700 ring-rose-600/20 dark:bg-rose-500/10 dark:text-rose-400 dark:ring-rose-500/20",
+  high: "bg-rose-50 text-rose-700 ring-rose-600/15 dark:bg-rose-500/10 dark:text-rose-400 dark:ring-rose-500/15",
   medium:
-    "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/20",
-  low: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/20",
+    "bg-amber-50 text-amber-700 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/15",
+  low: "bg-emerald-50 text-emerald-700 ring-emerald-600/15 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/15",
 };
 
 function IconSend() {
@@ -49,7 +49,7 @@ function IconSend() {
 
 function IconSparkle() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
       <path d="M12 2.5l1.8 5.2 5.2 1.8-5.2 1.8-1.8 5.2-1.8-5.2-5.2-1.8 5.2-1.8L12 2.5z" />
     </svg>
   );
@@ -57,7 +57,7 @@ function IconSparkle() {
 
 function IconTicket() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-5 w-5">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-4 w-4">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -77,70 +77,13 @@ function IconPlus() {
 
 function IconUpload() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-5 w-5">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="h-4 w-4">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"
       />
     </svg>
-  );
-}
-
-function ChatMarkdown({ content }: { content: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-        strong: ({ children }) => (
-          <strong className="font-semibold">{children}</strong>
-        ),
-        ul: ({ children }) => (
-          <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>
-        ),
-        ol: ({ children }) => (
-          <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>
-        ),
-        li: ({ children }) => <li>{children}</li>,
-        code: ({ children }) => (
-          <code className="rounded bg-black/10 px-1 py-0.5 font-mono text-[0.85em] dark:bg-white/10">
-            {children}
-          </code>
-        ),
-        a: ({ children, href }) => (
-          <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline underline-offset-2"
-          >
-            {children}
-          </a>
-        ),
-        table: ({ children }) => (
-          <div className="mb-2 overflow-x-auto last:mb-0">
-            <table className="min-w-full border-collapse text-left text-sm">
-              {children}
-            </table>
-          </div>
-        ),
-        thead: ({ children }) => (
-          <thead className="border-b border-current/20">{children}</thead>
-        ),
-        tr: ({ children }) => (
-          <tr className="border-b border-current/10 last:border-0">
-            {children}
-          </tr>
-        ),
-        th: ({ children }) => (
-          <th className="px-3 py-1.5 font-semibold">{children}</th>
-        ),
-        td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
-      }}
-    >
-      {content}
-    </ReactMarkdown>
   );
 }
 
@@ -157,6 +100,53 @@ function IconFile() {
   );
 }
 
+function ChatMarkdown({ content }: { content: string }) {
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={{
+        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+        ul: ({ children }) => (
+          <ul className="mb-2 list-disc space-y-1 pl-4 last:mb-0">{children}</ul>
+        ),
+        ol: ({ children }) => (
+          <ol className="mb-2 list-decimal space-y-1 pl-4 last:mb-0">{children}</ol>
+        ),
+        li: ({ children }) => <li>{children}</li>,
+        code: ({ children }) => (
+          <code className="rounded bg-black/10 px-1 py-0.5 font-mono text-[0.85em] dark:bg-white/10">
+            {children}
+          </code>
+        ),
+        a: ({ children, href }) => (
+          <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+            {children}
+          </a>
+        ),
+        table: ({ children }) => (
+          <div className="mb-2 overflow-x-auto last:mb-0">
+            <table className="min-w-full border-collapse text-left text-sm">{children}</table>
+          </div>
+        ),
+        thead: ({ children }) => <thead className="border-b border-current/20">{children}</thead>,
+        tr: ({ children }) => <tr className="border-b border-current/10 last:border-0">{children}</tr>,
+        th: ({ children }) => <th className="px-3 py-1.5 font-semibold">{children}</th>,
+        td: ({ children }) => <td className="px-3 py-1.5 align-top">{children}</td>,
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
+}
+
+const NAV_ITEMS = [
+  { href: "#overview", label: "Overview" },
+  { href: "#tickets", label: "Tickets" },
+  { href: "#documents", label: "Documents" },
+  { href: "#assistant", label: "Assistant" },
+];
+
 export default function Home() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [ticketsError, setTicketsError] = useState<string | null>(null);
@@ -170,8 +160,6 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [asking, setAsking] = useState(false);
   const [askError, setAskError] = useState<string | null>(null);
-  // null until the first message gets a conversation_id back from the backend;
-  // every message after that sends it so the backend knows which history to use.
   const [conversationId, setConversationId] = useState<number | null>(null);
 
   const [uploading, setUploading] = useState(false);
@@ -220,8 +208,6 @@ export default function Home() {
       const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // conversation_id is null on the first message - the backend starts
-        // a new conversation and hands back the id we then reuse below.
         body: JSON.stringify({ question: trimmed, conversation_id: conversationId }),
       });
 
@@ -232,10 +218,7 @@ export default function Home() {
 
       const data: { answer: string; sources?: string[]; conversation_id: number } = await res.json();
       setConversationId(data.conversation_id);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.answer, sources: data.sources },
-      ]);
+      setMessages((prev) => [...prev, { role: "assistant", content: data.answer, sources: data.sources }]);
     } catch (err) {
       setAskError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -252,8 +235,6 @@ export default function Home() {
     setCreateTicketError(null);
 
     try {
-      // Only the title is sent - the backend calls Claude to decide
-      // priority and topic automatically (see app/classify.py).
       const res = await fetch(`${API_URL}/tickets`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -277,7 +258,7 @@ export default function Home() {
 
   async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    e.target.value = ""; // allow re-selecting the same file later
+    e.target.value = "";
     if (!file) return;
 
     setUploading(true);
@@ -289,7 +270,7 @@ export default function Home() {
 
       const res = await fetch(`${API_URL}/documents/upload`, {
         method: "POST",
-        body: formData, // no Content-Type header — the browser sets the multipart boundary itself
+        body: formData,
       });
 
       if (!res.ok) {
@@ -309,301 +290,399 @@ export default function Home() {
   const highCount = tickets.filter((t) => t.priority === "high").length;
   const openCount = tickets.filter((t) => t.status === "open").length;
 
+  // Priority is an ordered severity scale, so it uses the same status colors
+  // (rose/amber/emerald) as the priority dots/badges elsewhere - not a fresh
+  // categorical palette, which would make two different "reds" mean different
+  // things in the same app.
+  const priorityCounts = [
+    { label: "High", count: tickets.filter((t) => t.priority === "high").length, color: "bg-rose-500" },
+    { label: "Medium", count: tickets.filter((t) => t.priority === "medium").length, color: "bg-amber-500" },
+    { label: "Low", count: tickets.filter((t) => t.priority === "low").length, color: "bg-emerald-500" },
+  ];
+  const maxPriorityCount = Math.max(1, ...priorityCounts.map((p) => p.count));
+
+  // Topic is a magnitude comparison ("how many tickets per topic"), not an
+  // identity/series job, so it gets a single sequential hue rather than a
+  // categorical rainbow - sorted descending, largest first.
+  const topicCounts = Object.entries(
+    tickets.reduce<Record<string, number>>((acc, t) => {
+      acc[t.topic] = (acc[t.topic] ?? 0) + 1;
+      return acc;
+    }, {})
+  )
+    .map(([topic, count]) => ({ topic, count }))
+    .sort((a, b) => b.count - a.count);
+  const maxTopicCount = Math.max(1, ...topicCounts.map((t) => t.count));
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-50 to-white font-sans dark:from-black dark:to-zinc-950">
-      {/* Top nav */}
-      <header className="sticky top-0 z-10 border-b border-zinc-200/70 bg-white/80 backdrop-blur-md dark:border-zinc-800/70 dark:bg-black/60">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-sm">
+    <div className="flex min-h-screen bg-gradient-to-b from-zinc-100 to-zinc-50 font-sans dark:from-zinc-950 dark:to-black">
+      {/* Sidebar */}
+        <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-zinc-200 bg-white px-4 py-6 md:flex dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="flex items-center gap-2.5 px-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-600 text-white shadow-sm shadow-indigo-600/30">
               <IconSparkle />
             </div>
             <div>
-              <p className="text-sm font-semibold leading-none text-zinc-900 dark:text-zinc-50">
-                Cortex
-              </p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                AI Operations Platform
-              </p>
+              <p className="text-sm font-semibold leading-none text-zinc-900 dark:text-zinc-50">Cortex</p>
+              <p className="mt-0.5 text-[11px] text-zinc-500 dark:text-zinc-500">AI Operations Platform</p>
             </div>
           </div>
-          <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400">
-            Learning build
-          </span>
-        </div>
-      </header>
 
-      <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
-        {/* Stats */}
-        <section className="grid grid-cols-3 gap-4">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Total tickets
-            </p>
-            <p className="mt-2 text-3xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {tickets.length}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              High priority
-            </p>
-            <p className="mt-2 text-3xl font-semibold text-rose-600 dark:text-rose-400">
-              {highCount}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              Open
-            </p>
-            <p className="mt-2 text-3xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {openCount}
-            </p>
-          </div>
-        </section>
-
-        {/* Tickets */}
-        <section>
-          <div className="mb-4 flex items-center gap-2">
-            <IconTicket />
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              Tickets
-            </h2>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <form
-              onSubmit={handleCreateTicket}
-              className="flex items-center gap-2 border-b border-zinc-100 p-3 dark:border-zinc-800"
-            >
-              <input
-                type="text"
-                value={newTicketTitle}
-                onChange={(e) => setNewTicketTitle(e.target.value)}
-                placeholder="Describe a new ticket… (priority is set by AI)"
-                className="flex-1 rounded-xl border border-transparent bg-zinc-50 px-4 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-zinc-600"
-              />
-              <button
-                type="submit"
-                disabled={creatingTicket || !newTicketTitle.trim()}
-                className="flex shrink-0 items-center gap-1.5 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          <nav className="mt-8 flex flex-col gap-0.5">
+            {NAV_ITEMS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700 dark:text-zinc-400 dark:hover:bg-indigo-500/10 dark:hover:text-indigo-400"
               >
-                <IconPlus />
-                {creatingTicket ? "Classifying…" : "Add"}
-              </button>
-            </form>
+                {item.label}
+              </a>
+            ))}
+          </nav>
 
-            {createTicketError && (
-              <p className="px-5 py-3 text-sm text-rose-600 dark:text-rose-400">
-                {createTicketError}
-              </p>
-            )}
-
-            {loadingTickets && (
-              <p className="px-5 py-6 text-sm text-zinc-500">Loading tickets…</p>
-            )}
-
-            {ticketsError && (
-              <p className="px-5 py-6 text-sm text-rose-600 dark:text-rose-400">
-                Couldn&apos;t load tickets: {ticketsError}. Is the backend
-                running at {API_URL}?
-              </p>
-            )}
-
-            {!loadingTickets && !ticketsError && tickets.length === 0 && (
-              <p className="px-5 py-6 text-sm text-zinc-500">No tickets yet.</p>
-            )}
-
-            <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
-              {tickets.map((ticket) => (
-                <li
-                  key={ticket.id}
-                  className="flex items-center gap-3 px-5 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-                >
-                  <span
-                    className={`h-2 w-2 shrink-0 rounded-full ${
-                      priorityDot[ticket.priority] ?? priorityDot.low
-                    }`}
-                  />
-                  <span className="flex-1 text-sm text-zinc-800 dark:text-zinc-200">
-                    {ticket.title}
-                  </span>
-                  <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                    {ticket.topic}
-                  </span>
-                  <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                    {ticket.status}
-                  </span>
-                  <span
-                    className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
-                      priorityBadge[ticket.priority] ?? priorityBadge.low
-                    }`}
-                  >
-                    {ticket.priority}
-                  </span>
-                </li>
-              ))}
-            </ul>
+          <div className="mt-auto rounded-md border border-zinc-200 bg-gradient-to-br from-zinc-50 to-white px-3 py-2.5 dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-950">
+            <p className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-500 dark:text-zinc-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Environment
+            </p>
+            <p className="mt-0.5 text-xs text-zinc-700 dark:text-zinc-300">Local development</p>
           </div>
-        </section>
+        </aside>
 
-        {/* Upload documents */}
-        <section>
-          <div className="mb-4 flex items-center gap-2">
-            <IconUpload />
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              Documents
-            </h2>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-center justify-between gap-4">
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                Upload a PDF to add it to Cortex&apos;s knowledge base.
-              </p>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="application/pdf"
-                onChange={handleFileSelected}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="flex shrink-0 items-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-300"
-              >
-                <IconUpload />
-                {uploading ? "Uploading…" : "Upload PDF"}
-              </button>
+        {/* Main content */}
+        <div className="min-w-0 flex-1">
+          <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/90 px-6 py-3.5 backdrop-blur-sm md:px-10 dark:border-zinc-800 dark:bg-zinc-950/90">
+            <div className="mx-auto flex max-w-5xl items-center justify-between">
+              <div className="flex items-center gap-2 md:hidden">
+                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900">
+                  <IconSparkle />
+                </div>
+                <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Cortex</span>
+              </div>
+              <h1 className="hidden text-sm font-medium text-zinc-500 md:block dark:text-zinc-400">
+                Operations Overview
+              </h1>
+              <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400">
+                Learning build
+              </span>
             </div>
+          </header>
 
-            {uploadError && (
-              <p className="mt-4 text-sm text-rose-600 dark:text-rose-400">
-                {uploadError}
-              </p>
-            )}
-
-            {uploadedDocs.length > 0 && (
-              <ul className="mt-4 flex flex-col gap-2 border-t border-zinc-100 pt-4 dark:border-zinc-800">
-                {uploadedDocs.map((doc, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center gap-3 rounded-xl bg-zinc-50 px-4 py-2.5 text-sm dark:bg-zinc-800/60"
-                  >
-                    <IconFile />
-                    <span className="flex-1 text-zinc-800 dark:text-zinc-200">
-                      {doc.filename}
+          <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-8 md:px-10 md:py-10">
+            {/* Overview / stats */}
+            <section id="overview" className="scroll-mt-20">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Total tickets</p>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                      <IconTicket />
                     </span>
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500">
-                      {doc.pages} {doc.pages === 1 ? "page" : "pages"} ·{" "}
-                      {doc.chunks_stored} {doc.chunks_stored === 1 ? "chunk" : "chunks"}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </section>
+                  </div>
+                  <p className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                    {tickets.length}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">High priority</p>
+                    <span className="h-2 w-2 rounded-full bg-rose-500" />
+                  </div>
+                  <p className="mt-2 text-3xl font-semibold tracking-tight text-rose-600 dark:text-rose-400">
+                    {highCount}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">Open</p>
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                  </div>
+                  <p className="mt-2 text-3xl font-semibold tracking-tight text-emerald-600 dark:text-emerald-400">
+                    {openCount}
+                  </p>
+                </div>
+              </div>
 
-        {/* Ask assistant */}
-        <section>
-          <div className="mb-4 flex items-center gap-2">
-            <IconSparkle />
-            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              Ask the assistant
-            </h2>
-          </div>
-
-          <div className="flex flex-col rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex max-h-96 min-h-[8rem] flex-col gap-4 overflow-y-auto px-5 py-5">
-              {messages.length === 0 && !asking && (
-                <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                  Ask anything about your tickets, or how Cortex works.
-                </p>
-              )}
-
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
-                      msg.role === "user"
-                        ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
-                        : "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200"
-                    }`}
-                  >
-                    {msg.role === "assistant" ? (
-                      <ChatMarkdown content={msg.content} />
-                    ) : (
-                      msg.content
-                    )}
-
-                    {msg.sources && msg.sources.length > 0 && (
-                      <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-current/10 pt-2">
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                          Sourced from:
-                        </span>
-                        {msg.sources.map((source, j) => (
-                          <span
-                            key={j}
-                            className="inline-flex items-center gap-1 rounded-full bg-black/5 px-2 py-0.5 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300"
-                          >
-                            <IconFile />
-                            {source}
+              {tickets.length > 0 && (
+                <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
+                  {/* Priority distribution - status severity, so status colors */}
+                  <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">By priority</p>
+                    <div className="mt-3 flex flex-col gap-2.5">
+                      {priorityCounts.map((p) => (
+                        <div key={p.label} className="flex items-center gap-3">
+                          <span className="w-14 shrink-0 text-xs text-zinc-600 dark:text-zinc-400">{p.label}</span>
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                            <div
+                              className={`h-full rounded-r-full ${p.color}`}
+                              style={{ width: `${(p.count / maxPriorityCount) * 100}%` }}
+                            />
+                          </div>
+                          <span className="w-5 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
+                            {p.count}
                           </span>
-                        ))}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Topic distribution - pure magnitude comparison, one sequential hue */}
+                  <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-500">By topic</p>
+                    <div className="mt-3 flex flex-col gap-2.5">
+                      {topicCounts.map((t) => (
+                        <div key={t.topic} className="flex items-center gap-3">
+                          <span className="w-24 shrink-0 truncate text-xs text-zinc-600 dark:text-zinc-400">
+                            {t.topic}
+                          </span>
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                            <div
+                              className="h-full rounded-r-full bg-indigo-500"
+                              style={{ width: `${(t.count / maxTopicCount) * 100}%` }}
+                            />
+                          </div>
+                          <span className="w-5 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-700 dark:text-zinc-300">
+                            {t.count}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* Tickets */}
+            <section id="tickets" className="scroll-mt-20">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                  <IconTicket />
+                </span>
+                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Tickets</h2>
+                {tickets.length > 0 && (
+                  <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[11px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                    {tickets.length}
+                  </span>
+                )}
+              </div>
+
+              <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                <form
+                  onSubmit={handleCreateTicket}
+                  className="flex flex-col gap-2 border-b border-zinc-200 p-3 sm:flex-row sm:items-center dark:border-zinc-800"
+                >
+                  <input
+                    type="text"
+                    value={newTicketTitle}
+                    onChange={(e) => setNewTicketTitle(e.target.value)}
+                    placeholder="Describe a new ticket… (priority set by AI)"
+                    className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-indigo-500"
+                  />
+                  <button
+                    type="submit"
+                    disabled={creatingTicket || !newTicketTitle.trim()}
+                    className="flex shrink-0 items-center justify-center gap-1.5 rounded-md bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
+                  >
+                    <IconPlus />
+                    {creatingTicket ? "Classifying…" : "Add ticket"}
+                  </button>
+                </form>
+
+                {createTicketError && (
+                  <p className="px-4 py-2.5 text-sm text-rose-600 dark:text-rose-400">{createTicketError}</p>
+                )}
+
+                {loadingTickets && <p className="px-4 py-5 text-sm text-zinc-500">Loading tickets…</p>}
+
+                {ticketsError && (
+                  <p className="px-4 py-5 text-sm text-rose-600 dark:text-rose-400">
+                    Couldn&apos;t load tickets: {ticketsError}. Is the backend running at {API_URL}?
+                  </p>
+                )}
+
+                {!loadingTickets && !ticketsError && tickets.length === 0 && (
+                  <p className="px-4 py-5 text-sm text-zinc-500">No tickets yet.</p>
+                )}
+
+                <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                  {tickets.map((ticket) => (
+                    <li
+                      key={ticket.id}
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/40"
+                    >
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${priorityDot[ticket.priority] ?? priorityDot.low}`}
+                      />
+                      <span className="min-w-0 flex-1 truncate text-sm text-zinc-800 dark:text-zinc-200">
+                        {ticket.title}
+                      </span>
+                      <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                        {ticket.topic}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 dark:text-zinc-500">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        {ticket.status}
+                      </span>
+                      <span
+                        className={`rounded-md px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset ${priorityBadge[ticket.priority] ?? priorityBadge.low}`}
+                      >
+                        {ticket.priority}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            {/* Documents */}
+            <section id="documents" className="scroll-mt-20">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                  <IconUpload />
+                </span>
+                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Documents</h2>
+                {uploadedDocs.length > 0 && (
+                  <span className="rounded-full bg-zinc-100 px-1.5 py-0.5 text-[11px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                    {uploadedDocs.length}
+                  </span>
+                )}
+              </div>
+
+              <div className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    Upload a PDF to add it to Cortex&apos;s knowledge base.
+                  </p>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleFileSelected}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="flex shrink-0 items-center justify-center gap-2 rounded-md bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
+                  >
+                    <IconUpload />
+                    {uploading ? "Uploading…" : "Upload PDF"}
+                  </button>
+                </div>
+
+                {uploadError && <p className="mt-3 text-sm text-rose-600 dark:text-rose-400">{uploadError}</p>}
+
+                {uploadedDocs.length > 0 && (
+                  <ul className="mt-3 flex flex-col gap-1.5 border-t border-zinc-100 pt-3 dark:border-zinc-800">
+                    {uploadedDocs.map((doc, i) => (
+                      <li
+                        key={i}
+                        className="flex items-center gap-3 rounded-md border border-transparent bg-zinc-50 px-3 py-2 text-sm transition-colors hover:border-zinc-200 dark:bg-zinc-800/60 dark:hover:border-zinc-700"
+                      >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-indigo-600 ring-1 ring-zinc-200 dark:bg-zinc-900 dark:text-indigo-400 dark:ring-zinc-700">
+                          <IconFile />
+                        </span>
+                        <span className="min-w-0 flex-1 truncate font-medium text-zinc-800 dark:text-zinc-200">
+                          {doc.filename}
+                        </span>
+                        <span className="shrink-0 text-[11px] text-zinc-400 dark:text-zinc-500">
+                          {doc.pages} {doc.pages === 1 ? "page" : "pages"} · {doc.chunks_stored}{" "}
+                          {doc.chunks_stored === 1 ? "chunk" : "chunks"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+
+            {/* Assistant */}
+            <section id="assistant" className="scroll-mt-20">
+              <div className="mb-3 flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+                  <IconSparkle />
+                </span>
+                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Ask the assistant</h2>
+              </div>
+
+              <div className="flex flex-col rounded-lg border border-zinc-200 bg-white shadow-sm shadow-zinc-200/60 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+                <div className="flex max-h-96 min-h-[8rem] flex-col gap-3 overflow-y-auto px-4 py-4">
+                  {messages.length === 0 && !asking && (
+                    <p className="text-sm text-zinc-400 dark:text-zinc-500">
+                      Ask anything about your tickets, or how Cortex works.
+                    </p>
+                  )}
+
+                  {messages.map((msg, i) => (
+                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div
+                        className={`max-w-[80%] rounded-lg px-3.5 py-2.5 text-sm leading-relaxed shadow-sm ${
+                          msg.role === "user"
+                            ? "bg-indigo-600 text-white"
+                            : "border border-zinc-200 bg-zinc-50 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                        }`}
+                      >
+                        {msg.role === "assistant" ? <ChatMarkdown content={msg.content} /> : msg.content}
+
+                        {msg.sources && msg.sources.length > 0 && (
+                          <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-current/10 pt-2">
+                            <span className="text-[11px] text-zinc-500 dark:text-zinc-400">Sourced from:</span>
+                            {msg.sources.map((source, j) => (
+                              <span
+                                key={j}
+                                className="inline-flex items-center gap-1 rounded-md bg-black/5 px-1.5 py-0.5 text-[11px] text-zinc-600 dark:bg-white/10 dark:text-zinc-300"
+                              >
+                                <IconFile />
+                                {source}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  ))}
+
+                  {asking && (
+                    <div className="flex justify-start">
+                      <div className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]" />
+                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]" />
+                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" />
+                      </div>
+                    </div>
+                  )}
+
+                  {askError && <p className="text-sm text-rose-600 dark:text-rose-400">{askError}</p>}
+
+                  <div ref={chatEndRef} />
                 </div>
-              ))}
 
-              {asking && (
-                <div className="flex justify-start">
-                  <div className="flex items-center gap-1.5 rounded-2xl bg-zinc-100 px-4 py-3 dark:bg-zinc-800">
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-zinc-400 [animation-delay:-0.3s]" />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-zinc-400 [animation-delay:-0.15s]" />
-                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-zinc-400" />
-                  </div>
-                </div>
-              )}
-
-              {askError && (
-                <p className="text-sm text-rose-600 dark:text-rose-400">
-                  {askError}
-                </p>
-              )}
-
-              <div ref={chatEndRef} />
-            </div>
-
-            <form
-              onSubmit={handleAsk}
-              className="flex items-center gap-2 border-t border-zinc-100 p-3 dark:border-zinc-800"
-            >
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Ask a question…"
-                className="flex-1 rounded-xl border border-transparent bg-zinc-50 px-4 py-2.5 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300 dark:bg-zinc-800 dark:text-zinc-50 dark:focus:border-zinc-600"
-              />
-              <button
-                type="submit"
-                disabled={asking || !question.trim()}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 text-white transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-300"
-              >
-                <IconSend />
-              </button>
-            </form>
-          </div>
-        </section>
-      </main>
+                <form
+                  onSubmit={handleAsk}
+                  className="flex items-center gap-2 border-t border-zinc-200 p-3 dark:border-zinc-800"
+                >
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Ask a question…"
+                    className="flex-1 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-indigo-500"
+                  />
+                  <button
+                    type="submit"
+                    disabled={asking || !question.trim()}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-indigo-600 text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-40"
+                  >
+                    <IconSend />
+                  </button>
+                </form>
+              </div>
+            </section>
+          </main>
+        </div>
     </div>
   );
 }
+
