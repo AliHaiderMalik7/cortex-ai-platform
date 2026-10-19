@@ -12,6 +12,22 @@ type AssistantSectionProps = {
   chatEndRef: React.RefObject<HTMLDivElement | null>;
 };
 
+function AssistantAvatar() {
+  return (
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-sm">
+      <IconSparkle />
+    </div>
+  );
+}
+
+function UserAvatar() {
+  return (
+    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs font-bold text-white dark:bg-zinc-200 dark:text-zinc-900">
+      Y
+    </div>
+  );
+}
+
 export function AssistantSection({
   messages,
   asking,
@@ -30,21 +46,29 @@ export function AssistantSection({
         <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">Ask the assistant</h2>
       </div>
 
-      <div className="flex flex-col rounded-xl border border-zinc-100 bg-white shadow-md shadow-zinc-200/40 dark:border-zinc-800/60 dark:bg-zinc-900 dark:shadow-none">
-        <div className="flex max-h-96 min-h-[9rem] flex-col gap-3.5 overflow-y-auto px-5 py-5">
+      <div className="flex flex-col overflow-hidden rounded-xl border border-zinc-100 bg-white shadow-md shadow-zinc-200/40 dark:border-zinc-800/60 dark:bg-zinc-900 dark:shadow-none">
+        {/* Tinted canvas, distinct from the white card chrome around it */}
+        <div className="scrollbar-thin flex max-h-[28rem] min-h-[11rem] flex-col gap-4 overflow-y-auto bg-gradient-to-b from-zinc-50 to-zinc-100/70 px-5 py-5 dark:from-zinc-950/40 dark:to-black/20">
           {messages.length === 0 && !asking && (
-            <p className="text-sm text-zinc-400 dark:text-zinc-500">
-              Ask anything about your tickets, or how Cortex works.
-            </p>
+            <div className="flex items-start gap-3">
+              <AssistantAvatar />
+              <p className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-500 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400">
+                Ask anything about your tickets, or how Cortex works.
+              </p>
+            </div>
           )}
 
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div
+              key={i}
+              className={`flex items-start gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
+            >
+              {msg.role === "user" ? <UserAvatar /> : <AssistantAvatar />}
               <div
-                className={`max-w-[80%] rounded-xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                className={`max-w-[75%] rounded-xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                   msg.role === "user"
                     ? "bg-indigo-600 text-white"
-                    : "border border-zinc-200 bg-zinc-50 text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                    : "border border-zinc-200 bg-white text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
                 }`}
               >
                 {msg.role === "assistant" ? <ChatMarkdown content={msg.content} /> : msg.content}
@@ -68,8 +92,9 @@ export function AssistantSection({
           ))}
 
           {asking && (
-            <div className="flex justify-start">
-              <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+            <div className="flex items-start gap-3">
+              <AssistantAvatar />
+              <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]" />
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]" />
                 <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" />
@@ -82,7 +107,7 @@ export function AssistantSection({
           <div ref={chatEndRef} />
         </div>
 
-        <form onSubmit={onAsk} className="flex items-center gap-2.5 border-t border-zinc-100 p-4 dark:border-zinc-800">
+        <form onSubmit={onAsk} className="flex items-center gap-2.5 border-t border-zinc-100 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <input
             type="text"
             value={question}

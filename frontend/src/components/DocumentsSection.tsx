@@ -10,9 +10,16 @@ type DocumentsSectionProps = {
   uploading: boolean;
   uploadError: string | null;
   onUpload: (file: File) => void;
+  canUpload: boolean;
 };
 
-export function DocumentsSection({ uploadedDocs, uploading, uploadError, onUpload }: DocumentsSectionProps) {
+export function DocumentsSection({
+  uploadedDocs,
+  uploading,
+  uploadError,
+  onUpload,
+  canUpload,
+}: DocumentsSectionProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>) {
@@ -41,22 +48,30 @@ export function DocumentsSection({ uploadedDocs, uploading, uploadError, onUploa
             Upload a PDF to add it to Cortex&apos;s knowledge base.
           </p>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileSelected}
-            className="hidden"
-          />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
-          >
-            <IconUpload />
-            {uploading ? "Uploading…" : "Upload PDF"}
-          </button>
+          {canUpload ? (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileSelected}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-500 disabled:opacity-50"
+              >
+                <IconUpload />
+                {uploading ? "Uploading…" : "Upload PDF"}
+              </button>
+            </>
+          ) : (
+            <span className="shrink-0 rounded-lg bg-zinc-100 px-3.5 py-2 text-xs font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+              Agent/admin sign-in required to upload
+            </span>
+          )}
         </div>
 
         {uploadError && <p className="mt-4 text-sm text-rose-600 dark:text-rose-400">{uploadError}</p>}

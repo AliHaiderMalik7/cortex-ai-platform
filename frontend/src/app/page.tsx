@@ -6,18 +6,32 @@ import { Header } from "@/components/Header";
 import { OverviewSection } from "@/components/OverviewSection";
 import { Sidebar } from "@/components/Sidebar";
 import { TicketsSection } from "@/components/TicketsSection";
+import { useAuth } from "@/hooks/useAuth";
 import { useChat } from "@/hooks/useChat";
 import { useDocuments } from "@/hooks/useDocuments";
 import { useTickets } from "@/hooks/useTickets";
 
 export default function Home() {
-  const ticketsState = useTickets();
-  const documentsState = useDocuments();
-  const chatState = useChat();
+  const authState = useAuth();
+  const ticketsState = useTickets(authState.token);
+  const documentsState = useDocuments(authState.token);
+  const chatState = useChat(authState.token);
+
+  // Only the backend's actual enforced permission (POST /documents/upload
+  // requires agent/admin - see app/dependencies.py) is reflected here. We
+  // don't fake-restrict anything the backend doesn't really check.
+  const canUploadDocuments = authState.user?.role === "agent" || authState.user?.role === "admin";
 
   return (
     <div className="flex min-h-screen bg-gradient-to-b from-zinc-100 to-zinc-50 font-sans dark:from-zinc-950 dark:to-black">
-      <Sidebar />
+      <Sidebar
+        user={authState.user}
+        authLoading={authState.authLoading}
+        authError={authState.authError}
+        onLogin={authState.login}
+        onSignup={authState.signup}
+        onLogout={authState.logout}
+      />
 
       <div className="min-w-0 flex-1">
         <Header />
@@ -34,6 +48,7 @@ export default function Home() {
             creatingTicket={ticketsState.creatingTicket}
             createTicketError={ticketsState.createTicketError}
             onCreateTicket={ticketsState.createTicket}
+            isLoggedIn={authState.user !== null}
           />
 
           <DocumentsSection
@@ -41,6 +56,7 @@ export default function Home() {
             uploading={documentsState.uploading}
             uploadError={documentsState.uploadError}
             onUpload={documentsState.uploadFile}
+            canUpload={canUploadDocuments}
           />
 
           <AssistantSection

@@ -12,6 +12,7 @@ type TicketsSectionProps = {
   creatingTicket: boolean;
   createTicketError: string | null;
   onCreateTicket: (e: React.FormEvent) => void;
+  isLoggedIn: boolean;
 };
 
 export function TicketsSection({
@@ -23,6 +24,7 @@ export function TicketsSection({
   creatingTicket,
   createTicketError,
   onCreateTicket,
+  isLoggedIn,
 }: TicketsSectionProps) {
   return (
     <section id="tickets" className="scroll-mt-20">
@@ -73,7 +75,11 @@ export function TicketsSection({
         )}
 
         {!loadingTickets && !ticketsError && tickets.length === 0 && (
-          <p className="px-5 py-6 text-sm text-zinc-500">No tickets yet.</p>
+          <p className="px-5 py-6 text-sm text-zinc-500">
+            {isLoggedIn
+              ? "No tickets yet."
+              : "Sign in to see tickets you've created - anonymous tickets aren't tied to any account, so there's nothing to list here yet."}
+          </p>
         )}
 
         <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">

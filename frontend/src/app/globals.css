@@ -27,3 +27,20 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
 }
+
+/* A slim, low-contrast scrollbar for inner scroll panes (e.g. the chat
+   canvas) instead of the bulky default browser scrollbar. */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(113, 113, 122, 0.35) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(113, 113, 122, 0.35);
+  border-radius: 9999px;
+}

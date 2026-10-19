@@ -17,3 +17,9 @@ export type UploadedDoc = {
   pages: number;
   chunks_stored: number;
 };
+
+export type AuthUser = {
+  id: number;
+  email: string;
+  role: "user" | "agent" | "admin";
+};

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-import { API_URL } from "@/lib/api";
+import { API_URL, authHeaders } from "@/lib/api";
 import type { Ticket } from "@/types";
 
-export function useTickets() {
+export function useTickets(token: string | null) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(true);
   const [ticketsError, setTicketsError] = useState<string | null>(null);
@@ -15,7 +15,11 @@ export function useTickets() {
   const [createTicketError, setCreateTicketError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/tickets`)
+    // Re-fetches whenever `token` changes (login/logout) - the result set
+    // itself depends on who's asking: anonymous sees none, "user" sees only
+    // their own, agent/admin see every ticket (see app/routers/tickets.py).
+    setLoadingTickets(true);
+    fetch(`${API_URL}/tickets`, { headers: authHeaders(token) })
       .then((res) => {
         if (!res.ok) throw new Error(`Backend responded with ${res.status}`);
         return res.json();
@@ -23,7 +27,7 @@ export function useTickets() {
       .then((data: Ticket[]) => setTickets(data))
       .catch((err) => setTicketsError(err.message))
       .finally(() => setLoadingTickets(false));
-  }, []);
+  }, [token]);
 
   async function createTicket(e: React.FormEvent) {
     e.preventDefault();
@@ -35,10 +39,12 @@ export function useTickets() {
 
     try {
       // Only the title is sent - the backend calls Claude to decide
-      // priority and topic automatically (see app/classify.py).
+      // priority and topic automatically (see app/classify.py). The token
+      // is optional - anonymous ticket creation is allowed by design, this
+      // just attaches ownership when the caller happens to be logged in.
       const res = await fetch(`${API_URL}/tickets`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
         body: JSON.stringify({ title: trimmed }),
       });
 

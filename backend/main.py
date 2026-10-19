@@ -17,19 +17,19 @@ with SessionLocal() as db:
         ])
         db.commit()
 
-# Seed one admin account on first run - there's no self-service way to become
-# an admin (see UserSignup), so without this nobody could ever manage
-# documents or reach any agent/admin-only route.
+# Seed one test account per role on first run - there's no self-service way
+# to become an agent or admin (see UserSignup), so without this nobody could
+# ever reach an agent/admin-only route. See DEV_ACCOUNTS.md for these creds.
 with SessionLocal() as db:
-    if not db.query(UserDB).filter(UserDB.role == "admin").first():
-        db.add(
-            UserDB(
-                email="admin@cortex.local",
-                hashed_password=hash_password("admin123"),
-                role="admin",
-            )
-        )
-        db.commit()
+    seed_accounts = [
+        ("user@cortex.local", "user123", "user"),
+        ("agent@cortex.local", "agent123", "agent"),
+        ("admin@cortex.local", "admin123", "admin"),
+    ]
+    for email, password, role in seed_accounts:
+        if not db.query(UserDB).filter(UserDB.email == email).first():
+            db.add(UserDB(email=email, hashed_password=hash_password(password), role=role))
+    db.commit()
 
 app = FastAPI(title="Cortex Backend - Learning Demo")
 

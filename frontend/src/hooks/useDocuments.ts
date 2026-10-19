@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-import { API_URL } from "@/lib/api";
+import { API_URL, authHeaders } from "@/lib/api";
 import type { UploadedDoc } from "@/types";
 
-export function useDocuments() {
+export function useDocuments(token: string | null) {
   const [uploadedDocs, setUploadedDocs] = useState<UploadedDoc[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -30,7 +30,11 @@ export function useDocuments() {
 
       const res = await fetch(`${API_URL}/documents/upload`, {
         method: "POST",
-        body: formData, // no Content-Type header - the browser sets the multipart boundary itself
+        // no Content-Type header - the browser sets the multipart boundary itself.
+        // This route requires agent/admin - an anonymous or "user"-role caller
+        // gets a 401/403 here, which is correct (see app/dependencies.py).
+        headers: authHeaders(token),
+        body: formData,
       });
 
       if (!res.ok) {

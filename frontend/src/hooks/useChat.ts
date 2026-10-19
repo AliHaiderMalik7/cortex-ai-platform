@@ -2,10 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { API_URL } from "@/lib/api";
+import { API_URL, authHeaders } from "@/lib/api";
 import type { ChatMessage } from "@/types";
 
-export function useChat() {
+export function useChat(token: string | null) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [asking, setAsking] = useState(false);
@@ -33,7 +33,7 @@ export function useChat() {
     try {
       const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...authHeaders(token) },
         body: JSON.stringify({ question: trimmed, conversation_id: conversationId }),
       });
 
