@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy.orm import relationship
 
 from app.database import Base
 
@@ -14,3 +15,37 @@ class TicketDB(Base):
     priority = Column(String, default="medium")
     topic = Column(String, default="other")
     status = Column(String, default="open")
+
+
+class ConversationDB(Base):
+    """One row per chat. Holds no message content itself - just groups
+    the MessageDB rows that belong to it (see the relationship below)."""
+
+    __tablename__ = "conversations"
+
+    id = Column(Integer, primary_key=True, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # Rolling summary of important facts (name, preferences, etc.), rewritten
+    # after every turn by app/memory.py. Unlike the message history, this is
+    # NEVER truncated by the sliding window - it's how facts survive even
+    # after the raw message that mentioned them falls outside the window.
+    context = Column(Text, default="")
+
+    # One-to-many: lets us write conversation.messages in Python and get
+    # every MessageDB row with this conversation's id, already ordered.
+    messages = relationship("MessageDB", back_populates="conversation", order_by="MessageDB.id")
+
+
+class MessageDB(Base):
+    """One row per message. conversation_id is the foreign key tying many
+    messages back to a single ConversationDB row - the one-to-many link."""
+
+    __tablename__ = "messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(Integer, ForeignKey("conversations.id"), nullable=False, index=True)
+    role = Column(String, nullable=False)  # "user" or "assistant"
+    content = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    conversation = relationship("ConversationDB", back_populates="messages")

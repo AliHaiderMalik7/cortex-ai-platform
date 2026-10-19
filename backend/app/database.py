@@ -1,10 +1,19 @@
+import os
+
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# File-based SQLite database - creates backend/tickets.db on disk
-DATABASE_URL = "sqlite:///./tickets.db"
+load_dotenv()  # called here too (not just config.py) so this module is safe to import first
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+# Falls back to local SQLite if DATABASE_URL isn't set, so the app still runs
+# without PostgreSQL configured.
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tickets.db")
+
+# check_same_thread is a SQLite-only quirk; PostgreSQL doesn't need it.
+connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

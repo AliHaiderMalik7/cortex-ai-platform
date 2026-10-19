@@ -35,3 +35,7 @@ class TicketOut(BaseModel):
 
 class AskRequest(BaseModel):
     question: str
+    # None on the first message of a new chat. The backend creates a new
+    # ConversationDB row and returns its id; the client sends that same id
+    # back on every follow-up so we know which history to load and append to.
+    conversation_id: int | None = None

@@ -170,6 +170,9 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [asking, setAsking] = useState(false);
   const [askError, setAskError] = useState<string | null>(null);
+  // null until the first message gets a conversation_id back from the backend;
+  // every message after that sends it so the backend knows which history to use.
+  const [conversationId, setConversationId] = useState<number | null>(null);
 
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -217,7 +220,9 @@ export default function Home() {
       const res = await fetch(`${API_URL}/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: trimmed }),
+        // conversation_id is null on the first message - the backend starts
+        // a new conversation and hands back the id we then reuse below.
+        body: JSON.stringify({ question: trimmed, conversation_id: conversationId }),
       });
 
       if (!res.ok) {
@@ -225,7 +230,8 @@ export default function Home() {
         throw new Error(body?.detail ?? `Request failed with ${res.status}`);
       }
 
-      const data: { answer: string; sources?: string[] } = await res.json();
+      const data: { answer: string; sources?: string[]; conversation_id: number } = await res.json();
+      setConversationId(data.conversation_id);
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.answer, sources: data.sources },
