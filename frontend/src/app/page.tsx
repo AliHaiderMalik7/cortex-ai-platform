@@ -22,7 +22,7 @@ export default function Home() {
       <div className="min-w-0 flex-1">
         <Header />
 
-        <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-8 md:px-10 md:py-10">
+        <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-10 md:px-10 md:py-12">
           <OverviewSection tickets={ticketsState.tickets} />
 
           <TicketsSection

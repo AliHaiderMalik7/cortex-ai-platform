@@ -39,3 +39,30 @@ class AskRequest(BaseModel):
     # ConversationDB row and returns its id; the client sends that same id
     # back on every follow-up so we know which history to load and append to.
     conversation_id: int | None = None
+
+
+class UserSignup(BaseModel):
+    # Self-service signup always creates a "user" role account - agent/admin
+    # accounts are created separately (seeded or by an existing admin), never
+    # chosen by the signer-upper themselves.
+    email: str
+    password: str
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+    role: str
+
+    model_config = {"from_attributes": True}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserOut

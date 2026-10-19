@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.auth import hash_password
 from app.database import SessionLocal, init_db
-from app.db_models import TicketDB
-from app.routers import ask, documents, tickets
+from app.db_models import TicketDB, UserDB
+from app.routers import ask, auth, documents, tickets
 
 init_db()
 
@@ -14,6 +15,20 @@ with SessionLocal() as db:
             TicketDB(title="Login page broken", priority="high", topic="bug", status="open"),
             TicketDB(title="Typo on homepage", priority="low", topic="bug", status="open"),
         ])
+        db.commit()
+
+# Seed one admin account on first run - there's no self-service way to become
+# an admin (see UserSignup), so without this nobody could ever manage
+# documents or reach any agent/admin-only route.
+with SessionLocal() as db:
+    if not db.query(UserDB).filter(UserDB.role == "admin").first():
+        db.add(
+            UserDB(
+                email="admin@cortex.local",
+                hashed_password=hash_password("admin123"),
+                role="admin",
+            )
+        )
         db.commit()
 
 app = FastAPI(title="Cortex Backend - Learning Demo")
@@ -31,6 +46,7 @@ def read_root():
     return {"message": "Cortex backend is running"}
 
 
+app.include_router(auth.router)
 app.include_router(tickets.router)
 app.include_router(ask.router)
 app.include_router(documents.router)

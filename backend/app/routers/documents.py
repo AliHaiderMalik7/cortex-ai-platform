@@ -1,16 +1,20 @@
 import io
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pypdf import PdfReader
 
 from app.config import documents_collection
+from app.dependencies import require_role
 from app.rag import chunk_text
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
 
 @router.post("/upload")
-async def upload_document(file: UploadFile = File(...)):
+async def upload_document(
+    file: UploadFile = File(...),
+    _: object = Depends(require_role("agent", "admin")),
+):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Only PDF files are supported")
 

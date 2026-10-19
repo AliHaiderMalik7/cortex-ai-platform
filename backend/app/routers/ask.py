@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 
 from app.config import claude, documents_collection
 from app.database import get_db
-from app.db_models import ConversationDB, MessageDB
+from app.db_models import ConversationDB, MessageDB, UserDB
+from app.dependencies import get_current_user_optional
 from app.memory import update_context
 from app.models import AskRequest
 
@@ -19,7 +20,11 @@ MAX_HISTORY_MESSAGES = 10
 
 
 @router.post("/ask")
-def ask_claude(request: AskRequest, db: Session = Depends(get_db)):
+def ask_claude(
+    request: AskRequest,
+    db: Session = Depends(get_db),
+    current_user: UserDB | None = Depends(get_current_user_optional),
+):
     # --- Conversation memory ---
     # Claude's API is stateless - it remembers nothing between calls. The
     # only way a reply can be aware of earlier turns is if WE resend the
@@ -31,7 +36,9 @@ def ask_claude(request: AskRequest, db: Session = Depends(get_db)):
         if not conversation:
             raise HTTPException(status_code=404, detail="Conversation not found")
     else:
-        conversation = ConversationDB()
+        # Anonymous chat is allowed by design - user_id stays NULL if there's
+        # no logged-in current_user (same pattern as ticket creation).
+        conversation = ConversationDB(user_id=current_user.id if current_user else None)
         db.add(conversation)
         db.commit()
         db.refresh(conversation)  # loads the auto-generated id
