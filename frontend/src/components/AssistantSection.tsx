@@ -58,49 +58,57 @@ export function AssistantSection({
             </div>
           )}
 
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`flex items-start gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
-            >
-              {msg.role === "user" ? <UserAvatar /> : <AssistantAvatar />}
+          {messages.map((msg, i) => {
+            // The streaming assistant bubble starts empty and fills in as
+            // chunks arrive (see useChat's appendToLastMessage) - while it's
+            // still empty, show the typing dots INSIDE this same bubble
+            // instead of a separate indicator underneath it.
+            const isStreamingPlaceholder =
+              asking && i === messages.length - 1 && msg.role === "assistant" && msg.content === "";
+
+            return (
               <div
-                className={`max-w-[75%] rounded-xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
-                  msg.role === "user"
-                    ? "bg-indigo-600 text-white"
-                    : "border border-zinc-200 bg-white text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
-                }`}
+                key={i}
+                className={`flex items-start gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
               >
-                {msg.role === "assistant" ? <ChatMarkdown content={msg.content} /> : msg.content}
+                {msg.role === "user" ? <UserAvatar /> : <AssistantAvatar />}
+                <div
+                  className={`max-w-[75%] rounded-xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+                    msg.role === "user"
+                      ? "bg-indigo-600 text-white"
+                      : "border border-zinc-200 bg-white text-zinc-800 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+                  }`}
+                >
+                  {isStreamingPlaceholder ? (
+                    <div className="flex items-center gap-1.5 py-0.5">
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" />
+                    </div>
+                  ) : msg.role === "assistant" ? (
+                    <ChatMarkdown content={msg.content} />
+                  ) : (
+                    msg.content
+                  )}
 
-                {msg.sources && msg.sources.length > 0 && (
-                  <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-current/10 pt-2">
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">Sourced from:</span>
-                    {msg.sources.map((source, j) => (
-                      <span
-                        key={j}
-                        className="inline-flex items-center gap-1 rounded-md bg-black/5 px-1.5 py-0.5 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300"
-                      >
-                        <IconFile />
-                        {source}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                  {msg.sources && msg.sources.length > 0 && (
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t border-current/10 pt-2">
+                      <span className="text-xs text-zinc-500 dark:text-zinc-400">Sourced from:</span>
+                      {msg.sources.map((source, j) => (
+                        <span
+                          key={j}
+                          className="inline-flex items-center gap-1 rounded-md bg-black/5 px-1.5 py-0.5 text-xs text-zinc-600 dark:bg-white/10 dark:text-zinc-300"
+                        >
+                          <IconFile />
+                          {source}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-
-          {asking && (
-            <div className="flex items-start gap-3">
-              <AssistantAvatar />
-              <div className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-3 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" />
-              </div>
-            </div>
-          )}
+            );
+          })}
 
           {askError && <p className="text-sm text-rose-600 dark:text-rose-400">{askError}</p>}
 
