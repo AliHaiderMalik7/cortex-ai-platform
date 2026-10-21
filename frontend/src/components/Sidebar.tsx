@@ -20,7 +20,7 @@ type SidebarProps = {
 
 export function Sidebar({ user, authLoading, authError, onLogin, onSignup, onLogout }: SidebarProps) {
   return (
-    <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-zinc-100 bg-white px-5 py-7 md:flex dark:border-zinc-800/60 dark:bg-zinc-950">
+    <aside className="scrollbar-thin sticky top-0 hidden h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-zinc-100 bg-white px-5 py-7 md:flex dark:border-zinc-800/60 dark:bg-zinc-950">
       <div className="flex items-center gap-2.5 px-1">
         <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
           <IconSparkle />

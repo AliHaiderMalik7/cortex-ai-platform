@@ -21,6 +21,7 @@ export default function Home() {
   // requires agent/admin - see app/dependencies.py) is reflected here. We
   // don't fake-restrict anything the backend doesn't really check.
   const canUploadDocuments = authState.user?.role === "agent" || authState.user?.role === "admin";
+  const isLoggedIn = authState.user !== null;
 
   return (
     <div className="flex min-h-screen bg-gradient-to-b from-zinc-100 to-zinc-50 font-sans dark:from-zinc-950 dark:to-black">
@@ -37,7 +38,7 @@ export default function Home() {
         <Header />
 
         <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-10 md:px-10 md:py-12">
-          <OverviewSection tickets={ticketsState.tickets} />
+          <OverviewSection tickets={ticketsState.tickets} isLoggedIn={isLoggedIn} />
 
           <TicketsSection
             tickets={ticketsState.tickets}
@@ -48,7 +49,7 @@ export default function Home() {
             creatingTicket={ticketsState.creatingTicket}
             createTicketError={ticketsState.createTicketError}
             onCreateTicket={ticketsState.createTicket}
-            isLoggedIn={authState.user !== null}
+            isLoggedIn={isLoggedIn}
           />
 
           <DocumentsSection
