@@ -1,0 +1,68 @@
+from typing import Literal
+
+from pydantic import BaseModel
+
+
+class TicketCreate(BaseModel):
+    # Only the title comes from the user now. priority/topic used to be typed
+    # in here too, but they're now decided automatically by classify_ticket()
+    # in app/classify.py, so we removed them from what the client sends.
+    title: str
+
+
+class TicketClassification(BaseModel):
+    """The exact shape Claude's answer is forced into (see app/classify.py).
+
+    Literal[...] here isn't just a type hint - it's what gets turned into a
+    JSON schema and sent to the Claude API, so Claude is technically
+    incapable of returning any value outside these lists (e.g. it can't
+    answer "urgent" instead of "high" - only these exact strings are valid).
+    """
+
+    priority: Literal["high", "medium", "low"]
+    topic: Literal["billing", "bug", "feature_request", "other"]
+
+
+class TicketOut(BaseModel):
+    id: int
+    title: str
+    priority: str
+    topic: str
+    status: str
+
+    model_config = {"from_attributes": True}  # lets this read straight from a TicketDB row
+
+
+class AskRequest(BaseModel):
+    question: str
+    # None on the first message of a new chat. The backend creates a new
+    # ConversationDB row and returns its id; the client sends that same id
+    # back on every follow-up so we know which history to load and append to.
+    conversation_id: int | None = None
+
+
+class UserSignup(BaseModel):
+    # Self-service signup always creates a "user" role account - agent/admin
+    # accounts are created separately (seeded or by an existing admin), never
+    # chosen by the signer-upper themselves.
+    email: str
+    password: str
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
+class UserOut(BaseModel):
+    id: int
+    email: str
+    role: str
+
+    model_config = {"from_attributes": True}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserOut
