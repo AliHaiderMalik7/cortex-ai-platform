@@ -20,12 +20,34 @@ export function useChat(token: string | null) {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, asking]);
 
+  // Appends text to the LAST message in the array - used as each streamed
+  // chunk arrives, so the bubble grows in place instead of waiting for
+  // one complete response.
+  function appendToLastMessage(text: string) {
+    setMessages((prev) => {
+      const next = [...prev];
+      const last = next[next.length - 1];
+      next[next.length - 1] = { ...last, content: last.content + text };
+      return next;
+    });
+  }
+
+  function setSourcesOnLastMessage(sources: string[]) {
+    setMessages((prev) => {
+      const next = [...prev];
+      next[next.length - 1] = { ...next[next.length - 1], sources };
+      return next;
+    });
+  }
+
   async function ask(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = question.trim();
     if (!trimmed) return;
 
-    setMessages((prev) => [...prev, { role: "user", content: trimmed }]);
+    // Placeholder assistant message, empty at first - streamed text fills
+    // it in via appendToLastMessage as chunks arrive.
+    setMessages((prev) => [...prev, { role: "user", content: trimmed }, { role: "assistant", content: "" }]);
     setQuestion("");
     setAsking(true);
     setAskError(null);
@@ -37,14 +59,43 @@ export function useChat(token: string | null) {
         body: JSON.stringify({ question: trimmed, conversation_id: conversationId }),
       });
 
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.detail ?? `Request failed with ${res.status}`);
       }
 
-      const data: { answer: string; sources?: string[]; conversation_id: number } = await res.json();
-      setConversationId(data.conversation_id);
-      setMessages((prev) => [...prev, { role: "assistant", content: data.answer, sources: data.sources }]);
+      // Server-Sent Events arrive as raw text over time, not one JSON blob -
+      // read the stream manually and parse "data: <json>\n\n" blocks as they
+      // complete. A chunk from the network can cut a block in half, so we
+      // buffer and only process whole blocks (keeping any trailing partial
+      // one for the next read).
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const blocks = buffer.split("\n\n");
+        buffer = blocks.pop() ?? ""; // last entry may be an incomplete block - keep it
+
+        for (const block of blocks) {
+          const line = block.trim();
+          if (!line.startsWith("data: ")) continue;
+          const event = JSON.parse(line.slice("data: ".length));
+
+          if (event.type === "text") {
+            appendToLastMessage(event.text);
+          } else if (event.type === "done") {
+            setConversationId(event.conversation_id);
+            setSourcesOnLastMessage(event.sources ?? []);
+          } else if (event.type === "error") {
+            throw new Error(event.detail ?? "Something went wrong");
+          }
+        }
+      }
     } catch (err) {
       setAskError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
