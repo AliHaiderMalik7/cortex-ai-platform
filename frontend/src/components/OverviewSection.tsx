@@ -1,7 +1,12 @@
 import { IconTicket } from "./icons";
 import type { Ticket } from "@/types";
 
-const CARD = "rounded-xl border border-zinc-100 bg-white p-5 shadow-md shadow-zinc-200/40 dark:border-zinc-800/60 dark:bg-zinc-900 dark:shadow-none";
+const CARD =
+  "animate-fade-in-up relative overflow-hidden rounded-md border border-zinc-700 bg-zinc-800 p-4 shadow-lg shadow-black/20 transition-colors hover:border-zinc-600";
+
+function AccentBar({ color }: { color: string }) {
+  return <span className={`absolute inset-x-0 top-0 h-0.5 ${color}`} />;
+}
 
 type OverviewSectionProps = {
   tickets: Ticket[];
@@ -19,43 +24,38 @@ export function OverviewSection({ tickets, isLoggedIn }: OverviewSectionProps) {
   const display = (value: number) => (isLoggedIn ? value : "–");
 
   return (
-    <section id="overview" className="scroll-mt-20">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className={CARD}>
+    <section>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className={CARD} style={{ animationDelay: "0ms" }}>
+          <AccentBar color="bg-violet-500" />
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Total tickets</p>
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400">
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Total tickets</p>
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-violet-500/10 text-violet-400">
               <IconTicket />
             </span>
           </div>
-          <p className="mt-3 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            {display(tickets.length)}
-          </p>
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-zinc-50">{display(tickets.length)}</p>
         </div>
-        <div className={CARD}>
+        <div className={CARD} style={{ animationDelay: "40ms" }}>
+          <AccentBar color="bg-rose-500" />
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">High priority</p>
-            <span className="h-2.5 w-2.5 rounded-full bg-rose-500" />
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">High priority</p>
+            <span className="h-2 w-2 rounded-full bg-rose-500" />
           </div>
-          <p className="mt-3 text-4xl font-bold tracking-tight text-rose-600 dark:text-rose-400">
-            {display(highCount)}
-          </p>
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-rose-400">{display(highCount)}</p>
         </div>
-        <div className={CARD}>
+        <div className={CARD} style={{ animationDelay: "80ms" }}>
+          <AccentBar color="bg-emerald-500" />
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Open</p>
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
+            <p className="text-[11px] font-medium uppercase tracking-wider text-zinc-500">Open</p>
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
           </div>
-          <p className="mt-3 text-4xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
-            {display(openCount)}
-          </p>
+          <p className="mt-3 text-3xl font-semibold tracking-tight text-emerald-400">{display(openCount)}</p>
         </div>
       </div>
 
       {!isLoggedIn && (
-        <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Sign in to see your ticket stats - these are scoped to your account.
-        </p>
+        <p className="mt-3 text-xs text-zinc-400">Sign in to see your ticket stats - these are scoped to your account.</p>
       )}
     </section>
   );
