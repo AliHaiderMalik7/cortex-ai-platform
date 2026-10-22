@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
+/* Dark-first by design, not a prefers-color-scheme fallback - this is the
+   one and only theme for now (see the Oct 2026 redesign discussion). */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #18181b;
+  --foreground: #fafafa;
 }
 
 @theme inline {
@@ -15,17 +17,11 @@
   --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
 }
 
 /* A slim, low-contrast scrollbar for inner scroll panes (e.g. the chat
@@ -43,4 +39,52 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background-color: rgba(113, 113, 122, 0.35);
   border-radius: 9999px;
+}
+
+/* Motion: the layer that makes an interface feel alive instead of static.
+   Applied to list items, chat bubbles, and skeleton loaders throughout. */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.25s ease-out both;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+.animate-shimmer {
+  /* A solid dark-surface base so the sweep has something to show up
+     against, not just a near-invisible tint on the page background. */
+  background-color: #3f3f46;
+  background-image: linear-gradient(90deg, transparent 25%, rgba(255, 255, 255, 0.08) 37%, transparent 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Chrome/Edge force a light autofill background (the washed-out white box
+   on saved credentials) that normal background-color can't override - this
+   is the standard trick: an absurdly long background-color transition delay
+   keeps the browser's own fill from ever visibly applying. Every input in
+   the app sits on zinc-900, so one rule covers all of them. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fafafa;
+  -webkit-box-shadow: 0 0 0px 1000px #18181b inset;
+  box-shadow: 0 0 0px 1000px #18181b inset;
+  caret-color: #fafafa;
+  transition: background-color 9999s ease-in-out 0s;
 }

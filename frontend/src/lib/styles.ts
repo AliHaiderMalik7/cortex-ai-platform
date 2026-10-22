@@ -8,8 +8,7 @@ export const priorityDot: Record<string, string> = {
 };
 
 export const priorityBadge: Record<string, string> = {
-  high: "bg-rose-50 text-rose-700 ring-rose-600/15 dark:bg-rose-500/10 dark:text-rose-400 dark:ring-rose-500/15",
-  medium:
-    "bg-amber-50 text-amber-700 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-400 dark:ring-amber-500/15",
-  low: "bg-emerald-50 text-emerald-700 ring-emerald-600/15 dark:bg-emerald-500/10 dark:text-emerald-400 dark:ring-emerald-500/15",
+  high: "bg-rose-500/10 text-rose-400 ring-1 ring-inset ring-rose-500/20",
+  medium: "bg-amber-500/10 text-amber-400 ring-1 ring-inset ring-amber-500/20",
+  low: "bg-emerald-500/10 text-emerald-400 ring-1 ring-inset ring-emerald-500/20",
 };
