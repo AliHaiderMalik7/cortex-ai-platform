@@ -16,9 +16,7 @@ export function ChatMarkdown({ content }: { content: string }) {
         ),
         li: ({ children }) => <li>{children}</li>,
         code: ({ children }) => (
-          <code className="rounded bg-black/10 px-1 py-0.5 font-mono text-[0.85em] dark:bg-white/10">
-            {children}
-          </code>
+          <code className="rounded bg-white/10 px-1 py-0.5 font-mono text-[0.85em]">{children}</code>
         ),
         a: ({ children, href }) => (
           <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
